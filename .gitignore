@@ -1,0 +1,30 @@
+# Local agent symlink & OS files
+.agents
+.DS_Store
+
+# Environment & local runtime data
+.env
+.env.local
+data/
+
+# Python
+backend/.venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Frontend / Node
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
+node_modules/
+dist/
+*.tsbuildinfo
+npm-debug.log*
