@@ -7,7 +7,8 @@ from typing import Any, Iterator
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_DATA_DIR = REPO_ROOT / "data"
 DATA_DIR_MODE = 0o700
 DATA_FILE_MODE = 0o600
 
@@ -44,7 +45,8 @@ def copy_private_file(source: str | Path, destination: str | Path) -> None:
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    # Repo-root .env always applies (backend is launched from backend/); a cwd .env overrides it.
+    model_config = SettingsConfigDict(env_file=(REPO_ROOT / ".env", ".env"), extra="ignore")
 
     # Fail closed: when DATA_DIR is unset, use the dedicated repository-level
     # ``data`` directory (the spec's ``../data`` relative to ``backend/``),

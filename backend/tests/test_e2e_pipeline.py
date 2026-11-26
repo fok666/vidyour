@@ -1280,14 +1280,15 @@ def test_composition_routes_report_missing_project_without_persisting(rig):
     assert rig.repository.get_composition("missing-project") is None
 
 
-def test_get_composition_reports_missing_composition(rig):
+def test_get_composition_returns_empty_timeline_for_new_project(rig):
     project = _create_project(rig.client)
 
     loaded = rig.client.get(f"/api/projects/{project['id']}/composition")
 
-    assert loaded.status_code == 404
-    assert loaded.json()["detail"] == "Composition not found"
-    assert rig.repository.get_composition(project["id"]) is None
+    assert loaded.status_code == 200
+    body = loaded.json()
+    assert (body["project_id"], body["video_clips"], body["audio_clips"]) == (project["id"], [], [])
+    assert rig.repository.get_composition(project["id"]) is None  # read does not persist
 
 
 def test_auto_assemble_rejects_missing_and_unusable_visual_parts(rig, monkeypatch):
