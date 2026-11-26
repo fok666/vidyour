@@ -143,7 +143,10 @@ def create_compositions_router(
             raise HTTPException(status_code=404, detail="Project not found")
         composition = repository.get_composition(project_id)
         if composition is None:
-            raise HTTPException(status_code=404, detail="Composition not found")
+            # A new project has an empty timeline, not a missing one.
+            composition = Composition(
+                project_id=project_id, video_clips=[], audio_clips=[], updated_at=_now()
+            )
         return composition.model_dump()
 
     @api.put("/projects/{project_id}/composition")

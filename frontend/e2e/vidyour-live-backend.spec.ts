@@ -92,7 +92,7 @@ test('real Chromium reaches the real FastAPI capabilities endpoint through Vite 
   try {
     backend = startProcess(
       resolve(repositoryRoot, 'backend/.venv/bin/python'),
-      ['-m', 'uvicorn', 'app.main:app', '--host', '127.0.0.1', '--port', '8000', '--log-level', 'warning'],
+      ['-m', 'uvicorn', '--factory', 'app.main:create_app', '--host', '127.0.0.1', '--port', '8000', '--log-level', 'warning'],
       { cwd: resolve(repositoryRoot, 'backend'), env: cleanEnvironment, logFile: backendLog },
     );
     const backendResponse = await waitForHttp(

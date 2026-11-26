@@ -182,6 +182,3 @@ def create_app(
         prefix="/api",
     )
     return application
-
-
-app = create_app()
