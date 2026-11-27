@@ -117,3 +117,45 @@ def test_real_settings_select_local_fallbacks_without_provider_credentials(
 
     assert capabilities["active_ai_provider"] == "local"
     assert capabilities["storage_backend"] == "local"
+
+
+def _release(version: str) -> tuple[int, ...]:
+    release = re.match(r"\d+(?:\.\d+)*", version)
+    assert release is not None, f"version has no numeric release: {version}"
+    return tuple(int(part) for part in release.group(0).split("."))
+
+
+def test_locked_numpy_and_boto3_meet_version_floors():
+    floors = {"numpy": "2.4.6", "boto3": "1.44.10"}
+    lock = tomllib.loads((BACKEND_DIR / "uv.lock").read_text())
+
+    locked: dict[str, list[str]] = {}
+    for package in lock["package"]:
+        name = _normalized_name(package["name"])
+        if name in floors:
+            locked.setdefault(name, []).append(package["version"])
+    assert set(floors) <= set(locked)
+
+    below = sorted(
+        f"{name}=={version}"
+        for name, floor in floors.items()
+        for version in locked[name]
+        if _release(version) < _release(floor)
+    )
+    assert below == []
+
+
+def test_build_requirement_setuptools_meets_version_floor():
+    floors = {"setuptools": "84.2.1"}
+    pyproject = tomllib.loads((BACKEND_DIR / "pyproject.toml").read_text())
+
+    build = _pinned_requirements(pyproject["build-system"]["requires"])
+    found = {name: version for name, (version, _) in build.items()}
+
+    stale = sorted(
+        f"{name}=={found[name]}"
+        for name, floor in floors.items()
+        if name in found and _release(found[name]) < _release(floor)
+    )
+    missing = sorted(name for name in floors if name not in found)
+    assert stale + missing == []

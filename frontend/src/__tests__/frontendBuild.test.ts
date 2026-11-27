@@ -1,7 +1,7 @@
 // @vitest-environment node
 
 import { dirname, resolve } from 'node:path';
-import type { OutputAsset, OutputChunk } from 'rollup';
+import type { Rollup } from 'vite';
 import { describe, expect, it } from 'vitest';
 import ts from 'typescript';
 import { build } from 'vite';
@@ -48,11 +48,11 @@ describe('frontend production readiness', () => {
       },
     });
     const bundles: unknown[] = Array.isArray(result) ? result : [result];
-    const outputs: Array<OutputAsset | OutputChunk> = bundles.flatMap(
-      (bundle): Array<OutputAsset | OutputChunk> => {
+    const outputs: Array<Rollup.OutputAsset | Rollup.OutputChunk> = bundles.flatMap(
+      (bundle): Array<Rollup.OutputAsset | Rollup.OutputChunk> => {
       if (typeof bundle !== 'object' || bundle === null || !('output' in bundle)) return [];
         return Array.isArray(bundle.output)
-          ? (bundle.output as Array<OutputAsset | OutputChunk>)
+          ? (bundle.output as Array<Rollup.OutputAsset | Rollup.OutputChunk>)
           : [];
       },
     );
@@ -72,6 +72,12 @@ describe('frontend production readiness', () => {
     }
     expect(html?.type).toBe('asset');
     expect(css?.type).toBe('asset');
-    if (css?.type === 'asset') expect(String(css.source).length).toBeGreaterThan(0);
+    if (css?.type === 'asset') {
+      const source = String(css.source);
+      expect(source.length).toBeGreaterThan(0);
+      expect(source).toContain('.bg-indigo-600');
+      expect(source).toContain('.timeline-dock');
+      expect(source).not.toContain('@tailwind');
+    }
   });
 });
