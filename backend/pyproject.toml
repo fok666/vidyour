@@ -18,7 +18,7 @@ dependencies = [
     "scipy==1.17.1",
     "pillow==13.0.0",
     "google-genai==3.6.1",
-    "boto3==1.44.9",
+    "boto3==1.44.10",
     "botocore[crt]==1.44.11",  # `aws login` profiles need the CRT credential provider
 ]
 
