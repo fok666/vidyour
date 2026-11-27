@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools==80.9.0"]
+requires = ["setuptools==84.2.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -14,11 +14,11 @@ dependencies = [
     "pydantic-settings==2.16.3",
     "python-multipart==0.0.34",
     "httpx==0.28.1",
-    "numpy==2.3.5",
+    "numpy==2.4.6",
     "scipy==1.17.1",
     "pillow==13.0.0",
     "google-genai==3.6.1",
-    "boto3==1.44.9",
+    "boto3==1.44.10",
     "botocore[crt]==1.44.11",  # `aws login` profiles need the CRT credential provider
 ]
 

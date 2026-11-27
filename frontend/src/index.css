@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* Studio styles for the semantic class names used by the components.
    Base element rules use :where() (zero specificity) so Tailwind utilities
